@@ -199,16 +199,15 @@ int main(int argc, char **argv)
   
   //x = readtextfile(argv[1]);
   //y = readtextfile(argv[2]);;
-  x = "bbabbbcbb";
-  y = "ac";
+  x = "chien";
+  y = "maison";
 
   //affiche(x, y, 50);
   printf("\n");
   int ** T;
   T = levenstein(x, y, strlen(x), strlen(y));
   affiche_Table(T, strlen(x), strlen(y));
-  affiche_backtrack(T, strlen(x), strlen(y));
-  //backtrack(T, strlen(x), strlen(y));
+  backtrack(T, strlen(x), strlen(y));
 
   return 0;
   free(x);
@@ -255,141 +254,31 @@ void affiche_Table(int ** T, int x, int y){
   }
 }
 
-void affiche_backtrack(int **T, int x, int y){
-  printf("\nBACkTr4CK:\n");
-  printf("%d\n", T[x][y]);
-  int ind = T[x][y];
-  char * Xp = "malloc(20*sizeof(char))ssssssssssssssss\0";
-  char * Yp = "malloc(20*sizeof(char))ssssssssssssssss\0";
-  int xi = 19;
-  int yi = 19;
-  Xp[10] = ' ';
-  printf("BITE%s\n", Xp);
-
-  while(x!=0 || y!=0 || T[x][y]!=0){
-    //printf("x:%d, y:%d\n", x, y);
-    if(x==0){
-      printf("%d  _H\n", T[x][y-1]);
-      Xp[yi] = 'X';
-      Yp[yi] = '-';
-      yi--;
-      xi--;
-      y--;
-    }
-    else if(y==0){
-      printf("%d  _B\n", T[x-1][y]);
-      Xp[yi] = '-';
-      Yp[yi] = 'X';
-      yi--;
-      xi--;
-
-      x--;
-    }
-    else{
-      int droite = T[x][y-1];
-      int gauche = T[x-1][y];
-      int diag = T[x-1][y-1];
-      int diff = T[x][y]-T[x-1][y-1];
-      
-      if(Imin3(droite, gauche, diag) != diag){
-        if(gauche > droite){
-          printf("%d  _H\n", T[x][y-1]);
-          Xp[yi] = '-';
-      		Yp[yi] = 'X';
-     			yi--;
-      		xi--;
-
-          y--;
-        }
-        else{
-          printf("%d  _B\n", T[x-1][y]);
-          Xp[yi] = 'X';
-		      Yp[yi] = '-';
-		      yi--;
-		      xi--;
-
-          x--;
-        }
-      }
-      else{
-        if(diff == diag){
-          printf("%d  BAD\n", T[x-1][y-1]);
-        }
-        else{
-          printf("%d  GUD\n", T[x-1][y-1]);
-        }
-        Xp[yi] = 'X';
-	      Yp[yi] = 'X';
-	      yi--;
-	      xi--;
-
-        x--;
-        y--;
-      }
-    }
-  }
-  printf("Xp: %s\nYp:%s\n", Xp, Yp);
-}
-
 void backtrack(int **T, int x, int y){
-  printf("BACKTRACK: \n");
-  int len_Al = Imax(x, y) + 20;
-  char *Xp = malloc(len_Al*sizeof(char));
-  char *Yp = malloc(len_Al*sizeof(char));
-  
-  for(int i=0; i<len_Al; i++) {
-    Xp[i] = '*';
-    Yp[i] = '*';
-  }
-  
-  for(int i=len_Al-1; i!=0; --i){
-    int gauche = 1000000;
-    int haut = 1000000;
-    int diag = 1000000;
-    int mx = 0;
-    int my = 0;
-    
-    if(x==0 && y==0){
-      break;
-    }
-    if(y!=0){
-      haut = T[x][y-1];
-      printf("F %d\n", haut);
-      my = 1;
-    }
-    if(x!=0){
-      gauche = T[x-1][y];
-      printf("D:  %d\n", gauche);
-      mx = 1;
-    }
-    if(x!=0 && y!=0){
-      diag = T[x-1][y-1];
-      printf("D:  %d\n", diag);
-      mx = 1;
-      my = 1;
-    }
-    if(mx==1){
-      x--;
-    }
-    if(my==1){
-      y--;
-    }
-    
-    // MACHIN TRUC BIDULENT
-    int min = Imin3(gauche, haut, diag);
-    
-    if(diag == min){
-      Xp[i] = 'M';
-      Yp[i] = 'M';
-    }
-    else if(gauche == min){
-      Xp[i] = 'X';
-      Yp[i] = '-';
-    }
-    else{
-      Xp[i] = '-';
-      Yp[i] = 'X';
-    }
-  }
-  printf("B1: %s\nB2: %s\n", Xp, Yp);
+	printf("\n\n");
+	//int haut, gauche, diag, min;
+	while(x!=0 || y!=0){
+		int haut, gauche, diag, min;
+		if(x!=0){	gauche = T[x-1][y];} else {gauche = 10000;}
+		if(y!=0){haut = T[x][y-1];} else {haut = 1000;}
+		if(x!=0 && y!=0){diag = T[x-1][y-1];} else {diag = 10000;}
+		min = Imin3(gauche, haut, diag);
+		//printf("%d\n", min);
+		if(min == diag){
+			//printf("%d\n", T[x-1][y-1]);
+			printf("X|Y\n");
+			x--;
+			y--;
+		}
+		else if(min == haut){
+			printf("*|Y\n");
+			//printf("%d\n", T[x][y-1]);
+			y--;
+		}
+		else{
+			printf("X|*\n");
+			//printf("%d\n", T[x-1][y]);
+			x--;
+		}
+	}
 }
