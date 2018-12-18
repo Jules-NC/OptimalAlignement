@@ -16,10 +16,9 @@ void affiche_Table(int ** T, int x, int y);
 void affiche_backtrack(int **T, int x, int y);
 void backtrack(int **T, int x, int y);
 
-/* =============================================================== */
+
 char * readtextfile(char * filename)
   /* Retourne le contenu du fichier texte filename */
-/* =============================================================== */
 {
   struct stat monstat;
   int N;
@@ -52,37 +51,31 @@ char * readtextfile(char * filename)
   return text;
 }
 
-/* =============================================================== */
+
 int Imax(int a, int b)
-/* Retourne  le maximum de a et b                                  */
-/* =============================================================== */
+/* Retourne  le maximum de a et b*/
 {
   if (a < b) return b;
   else return a;	       
 }
 
-/* =============================================================== */
+
 int Imin2(int a, int b)
-/* Retourne  le minimum de a et b                                  */
-/* =============================================================== */
+/* Retourne  le minimum de a et b*/
 {
   if (a < b) return a;
   else return b;	       
 }
 
-/* =============================================================== */
-int Imin3(int a, int b, int c)
-/* Retourne  le minimum de a, b et c                               */
-/* =============================================================== */
-{
+
+int Imin3(int a, int b, int c){
+/* Retourne  le minimum de a, b et c */
   return Imin2(Imin2(a,b),c);
 }
 
-/* =============================================================== */
-void retourne(char *c)
-/* Retourner la chaîne de caractère c                              */
-/* =============================================================== */
-{
+
+void retourne(char *c){
+/* Retourner la chaîne de caractère c */
   char tmp;
   int m, j, i;
   m = strlen(c);
@@ -93,10 +86,9 @@ void retourne(char *c)
     c[m-i-1] = tmp;
   }
 }
-/* =============================================================== */
-void afficheSeparateurHorizontal(int nbcar)
-/* =============================================================== */
-{
+
+
+void afficheSeparateurHorizontal(int nbcar){
   int i;
   printf("|-");
   for(i=0; i < nbcar; i++)
@@ -108,12 +100,9 @@ void afficheSeparateurHorizontal(int nbcar)
 }
 
 
-/* =============================================================== */
-void affiche(char* texte1, char* texte2, int nbcar)
+void affiche(char* texte1, char* texte2, int nbcar){
   /* Affiche simultanément texte1 et texte 2 en positionnnant nbcar  
      caractères sur chaque ligne. */
-/* =============================================================== */
-{
   int i, l1, l2, l;
   
   char *t1,*t2;
@@ -147,12 +136,7 @@ void affiche(char* texte1, char* texte2, int nbcar)
 }
 
 
-
-/* =============================================================== */
-void affiche2(char* texte1, char* texte2, int nbcar)
-  /* idem affiche, mais avec un formattage différent
-/* =============================================================== */
-{
+void affiche2(char* texte1, char* texte2, int nbcar){
 
   int i, l1, l2, l;
   
@@ -187,33 +171,28 @@ void affiche2(char* texte1, char* texte2, int nbcar)
 }
 
 
-/* =============================================================== */
-int main(int argc, char **argv)
-/* =============================================================== */
-{
-  char *x, *y; 
+int main(int argc, char **argv){
+  char *X, *Y; 
+  int x, y;
   
   if(argc != 3){
     printf("usage: %s text1 text2\n", argv[0]);
   }  
   
-  //x = readtextfile(argv[1]);
-  //y = readtextfile(argv[2]);;
-  x = "chien";
-  y = "maison";
+  X = "CCCCCACCCCCCCCCCBABCCCCC";
+  Y = "ABB";
 
-  //affiche(x, y, 50);
-  printf("\n");
+  x = strlen(X);
+  y = strlen(Y);
+
   int ** T;
-  T = levenstein(x, y, strlen(x), strlen(y));
-  affiche_Table(T, strlen(x), strlen(y));
-  backtrack(T, strlen(x), strlen(y));
+  T = levenstein(X, Y, x, y);
+  affiche(X, Y, Imax(x, y)); affiche_Table(T, x, y); printf("\n"); backtrack(T, x, y);
 
-  return 0;
-  free(x);
-  free(y);
   free(T);
+  return 0;
 }
+
 
 int ** create_table(int m, int n){
   int ** T;
@@ -222,6 +201,7 @@ int ** create_table(int m, int n){
           T[i]=malloc((n+1)*sizeof(int));
   return T;
 }
+
 
 int ** levenstein(char * x, char * y, int m, int n){
   int ** T = create_table(m,n);
@@ -245,6 +225,7 @@ int ** levenstein(char * x, char * y, int m, int n){
   return T;
 }
 
+
 void affiche_Table(int ** T, int x, int y){
   printf("Lev:\n");  
   for(int i=0; i<=x;++i){
@@ -254,30 +235,46 @@ void affiche_Table(int ** T, int x, int y){
   }
 }
 
+
 void backtrack(int **T, int x, int y){
-	printf("\n\n");
-	//int haut, gauche, diag, min;
-	while(x!=0 || y!=0){
-		int haut, gauche, diag, min;
-		if(x!=0){	gauche = T[x-1][y];} else {gauche = 10000;}
-		if(y!=0){haut = T[x][y-1];} else {haut = 1000;}
-		if(x!=0 && y!=0){diag = T[x-1][y-1];} else {diag = 10000;}
-		min = Imin3(gauche, haut, diag);
-		//printf("%d\n", min);
-		if(min == diag){
-			//printf("%d\n", T[x-1][y-1]);
-			printf("X|Y\n");
+	//	T : la matrice d'édition, x : taille x de T, y : taille y T
+	int haut, gauche, diag, min, max;
+	
+	char* X = "CCCCCACCCCCCCCCCBABCCCCC";
+	char* Y = "ABB";
+	char Xp[x+y+1];
+	char Yp[x+y+1];
+	strcpy(Xp, "$");
+	strcpy(Yp, "$");
+	int xi = x-1;
+	int yi = y-1;
+
+	
+	max = T[x][y]+1;	// La distance d'édition va toujours être décroissante, donc on sait que T[x][y]+1 ne sera jamais dépassé 
+	while(x!=0 || y!=0){	// Tant que l'on ne se situe pas en haut à gauche (fin du backtracing)
+		//	Cas de merde des bords (évite la segfault), j'ai condensé pasque sinon le code était vraiment immonde
+		if(x!=0){	gauche = T[x-1][y];} else {gauche = max;}
+		if(y!=0){haut = T[x][y-1];} else {haut = max;}
+		if(x!=0 && y!=0){diag = T[x-1][y-1];} else {diag = max;}
+		min = Imin3(gauche, haut, diag);	//	Valeur séléctionnée
+		//	BACKTRACKING !!!
+		if(min == diag){	// Priorisation de la diagonale dans le backtracking => minimisation du nomrbe d'éditions (une subst = n*add + n*del du coup on choisit le chemin le + court)
+			printf("%c|%c\n", X[xi], Y[yi]);
+			xi--;
+			yi--;
+			
 			x--;
 			y--;
 		}
 		else if(min == haut){
-			printf("*|Y\n");
-			//printf("%d\n", T[x][y-1]);
+			printf("*|%c\n", Y[yi]);
+			yi--;
+			
 			y--;
 		}
 		else{
-			printf("X|*\n");
-			//printf("%d\n", T[x-1][y]);
+			printf("%c|*\n", X[xi]);
+			xi--;
 			x--;
 		}
 	}
