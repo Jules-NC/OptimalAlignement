@@ -54,11 +54,11 @@ Dans cette partie, je vais donner le schéma de l'algorithme, puis essayer de le
 ## Algorithme pour l'alignement optimal
 Paramètres: T la matrice décrite ci dessus, m sa longueur, n sa largeur
 **\'\*\'** n'appartient pas à notre alphabet
-**INITIALISATION :**
-- m:=|x|, n:= |y|
-- Se placer à T[m][n]
-- créer deux chaines **x'** et **y'** vides
-- placer deux compteurs xi et yi sur les derniers caracteres de **x** et **y**.
+```C
+//Se placer à T[|x|][|y|]
+int m:=|x|; int n:= |y|;
+//créer deux chaines **x'** et **y'** vides
+placer deux compteurs xi et yi sur les derniers caracteres de **x** et **y**.
 
 **CONDITION D'ARRET :**
 Tant que x et y ne sont aps tous deux nuls:  => Tant que nous ne sommes pas en haut à gauche => fin de l'algorithme
@@ -82,7 +82,7 @@ Regarder ou se situe le minimum entre les cases à gauche, en haut et en diagona
 
 **FIN :**
 inverser x' et y', puis les retourner
-
+```
 ## En quoi cet algorithme est-il représentatif d'un alignement ?
 En retournant en arrière dans la matrice T, sachant qu'elle donne le nombre minimal de délétions, d'additions et de substitutions pour transformer x en y, nous pouvons nous appercevoir d'une chose: 
 - Une opération de délétion d'un caractere dans x sera traduite par l'ajout du caractere '\*' dans y'
@@ -99,4 +99,18 @@ En outre, les compteurs xi et yi sont décrémentés à chaque ajout d'un caract
 Les résultats **(1)** et **(2)** sont les deux conditions nescessaires et suffisantes définissant un alignement (x', y') de x et y.
 
 ## Un alignement optimal ?
-Comme démontré à la **Q1**, 
+Comme démontré à la **Q1**, la table T dans lequel se promène l'algorithme de backtracing contient le score de l'alignement optimal entre xi et yj ou xi et yj désignent les préfixes de x et y de longueurs i et j respéctivement.
+
+Le fait de prendre le minimum de gauche, haut et diagonale (diagonale priorisée, car 1 sbst = 1 del + 1 add et 2 opérations > 1 opérations, or on cherche à minimiser ce nombre). va nous permettre de connaître la décision prise par l'algorithme de calcul du score de l'alignement optimal entre xi et yj, et de changer x' et y' en fonction de celle-ci comme décrit précedemment. Sachant que le nombre d'opérations fait par notre leveinstein est optimal, alors celle faite sur x' et y' le sera également.
+
+Nous obtenons donc avec notre algorithme un alignement optimal (x' y') de x et y. 
+
+## Analyse de la complexité de l'algorithme de backtracing
+m et n sont initialisés à |x| et |y| respéctivement
+Une seule des trois conditions sur le minimum sera exécutée à la fois.
+Une de ces conditions sera forcément exécutée.
+Dans le pire des cas, on ne décrémente que m ou que n. Ils sont décrémentés de 1.
+L'algorithme s'arrête quand m et n valent tous deux zéro.
+
+Dans le pire des cas, on aura donc |x| + |y| tours de boucle. La complexité de l'algorithme est donc O(m+n).
+Nous retrouvons bien une complexité linéaire.
