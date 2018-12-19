@@ -3,18 +3,21 @@
 #include <sys/stat.h>
 #include <string.h>
 
-struct alignement
-{
+
+struct alignement{
   char * x;
   char * y;
 };
 
-
+//	AMOI !!!!
 int ** create_table(int X, int Y);
 int ** levenstein(char *x, char * y, int m, int n);
 void affiche_Table(int **T, int x, int y);
 void affiche_backtrack(int **T, int x, int y);
 struct alignement backtrack(int **T, char* X, char* Y);
+
+
+
 
 
 char * readtextfile(char * filename){
@@ -52,7 +55,6 @@ char * readtextfile(char * filename){
 
 
 int Imax(int a, int b)
-/* Retourne  le maximum de a et b*/
 {
   if (a < b) return b;
   else return a;	       
@@ -60,7 +62,6 @@ int Imax(int a, int b)
 
 
 int Imin2(int a, int b)
-/* Retourne  le minimum de a et b*/
 {
   if (a < b) return a;
   else return b;	       
@@ -68,7 +69,6 @@ int Imin2(int a, int b)
 
 
 int Imin3(int a, int b, int c){
-/* Retourne  le minimum de a, b et c */
   return Imin2(Imin2(a,b),c);
 }
 
@@ -208,8 +208,8 @@ int main(int argc, char **argv){
 	free(T[i]);
   }
   free(T);
-  //free(Prime.x);
-  //free(Prime.y);
+  free(Prime.x);
+  free(Prime.y);
   return 0;
 }
 
