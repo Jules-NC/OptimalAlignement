@@ -14,7 +14,7 @@ int ** create_table(int X, int Y);
 int ** levenstein(char * x, char * y, int m, int n);
 void affiche_Table(int ** T, int x, int y);
 void affiche_backtrack(int **T, int x, int y);
-void backtrack(int **T, int x, int y);
+void backtrack(int **T, char* X, char* Y);
 
 
 char * readtextfile(char * filename)
@@ -177,17 +177,21 @@ int main(int argc, char **argv){
   
   if(argc != 3){
     printf("usage: %s text1 text2\n", argv[0]);
-  }  
+  }
   
-  X = "CCCCCACCCCCCCCCCBABCCCCC";
-  Y = "ABB";
+  X = "CHROAAAAAAAAAAAAAAAFFQSZAIEYGZUOPYUMOSOME";
+  Y = "SHTROUMPH";
 
   x = strlen(X);
   y = strlen(Y);
 
   int ** T;
   T = levenstein(X, Y, x, y);
-  affiche(X, Y, Imax(x, y)); affiche_Table(T, x, y); printf("\n"); backtrack(T, x, y);
+  
+  printf("Calcul de l'alignement optimal en O(x+y+1)\n");
+  affiche2(X, Y, Imax(x, y));
+  printf("\nAPRES ALIGNEMENT:\n\n");
+  backtrack(T, X, Y);
 
   free(T);
   return 0;
@@ -236,46 +240,55 @@ void affiche_Table(int ** T, int x, int y){
 }
 
 
-void backtrack(int **T, int x, int y){
+void backtrack(int **T, char* X, char* Y){
 	//	T : la matrice d'édition, x : taille x de T, y : taille y T
-	int haut, gauche, diag, min, max;
+	int x, y, xi, yi, haut, gauche, diag, min, max, i;
+	char *Xp, *Yp;
 	
-	char* X = "CCCCCACCCCCCCCCCBABCCCCC";
-	char* Y = "ABB";
-	char Xp[x+y+1];
-	char Yp[x+y+1];
-	strcpy(Xp, "$");
-	strcpy(Yp, "$");
-	int xi = x-1;
-	int yi = y-1;
-
+	// Initialisation des paramètres
+	x = strlen(X);
+	y = strlen(Y);
+	Xp = malloc((x+y+1)*sizeof(char));
+	Yp = malloc((x+y+1)*sizeof(char));
+	strcpy(Xp, "");
+	strcpy(Yp, "");
+	xi = x-1;
+	yi = y-1;
+	max = T[x][y]+1;	// La distance d'édition va toujours être décroissante, donc on sait que T[x][y]+1 ne sera jamais dépassé (valeur initiale du backtrack => valeur maximale non stricte du chemin suivi par celui-ci)
+	i = 0;
 	
-	max = T[x][y]+1;	// La distance d'édition va toujours être décroissante, donc on sait que T[x][y]+1 ne sera jamais dépassé 
+	//	BACKTRACKING !!!
 	while(x!=0 || y!=0){	// Tant que l'on ne se situe pas en haut à gauche (fin du backtracing)
 		//	Cas de merde des bords (évite la segfault), j'ai condensé pasque sinon le code était vraiment immonde
 		if(x!=0){	gauche = T[x-1][y];} else {gauche = max;}
 		if(y!=0){haut = T[x][y-1];} else {haut = max;}
 		if(x!=0 && y!=0){diag = T[x-1][y-1];} else {diag = max;}
 		min = Imin3(gauche, haut, diag);	//	Valeur séléctionnée
-		//	BACKTRACKING !!!
-		if(min == diag){	// Priorisation de la diagonale dans le backtracking => minimisation du nomrbe d'éditions (une subst = n*add + n*del du coup on choisit le chemin le + court)
-			printf("%c|%c\n", X[xi], Y[yi]);
-			xi--;
-			yi--;
-			
-			x--;
-			y--;
+		
+		// Priorisation de la diagonale dans le backtracking => minimisation du nomrbe d'éditions (une subst = n*add + n*del du coup on choisit le chemin le + court)
+		if(min == diag){	
+			Xp[i] = X[xi];
+			Yp[i] = Y[yi];
+			xi--; yi--;
+			x--; y--;
 		}
 		else if(min == haut){
-			printf("*|%c\n", Y[yi]);
+			Xp[i] = '*';
+			Yp[i] = Y[yi];
 			yi--;
-			
 			y--;
 		}
 		else{
-			printf("%c|*\n", X[xi]);
+			Xp[i] = X[xi];
+			Yp[i] = '*';
 			xi--;
 			x--;
 		}
+	i++;
 	}
+	Xp[i] = '\0';
+	Yp[i] = '\0';
+	retourne(Xp);
+	retourne(Yp);
+	affiche2(Xp, Yp, 1+Imax(strlen(X), strlen(Y)));
 }
